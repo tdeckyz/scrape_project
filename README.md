@@ -3,11 +3,11 @@ A beginner-friendly Python script that scrapes product listings from eBay using 
 
 ## Features
 
-- Presents options in a form of menu
-- Scrapes product title, price, shipping info, and link
+- Scrapes product title, price, shipping charge, location and link
 - Handles pagination
 - Saves results in CSV format
 - User-friendly input prompts
+- Performs EDA using Python in Jupyter Notebook
 
 ## Tech Stack
 
