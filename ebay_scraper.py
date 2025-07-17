@@ -45,38 +45,20 @@ def save_to_csv(df,filename="data/ebay_results.csv"):
    print(f"Data saved to {filename}")
 
 if __name__ == "__main__":
-   ans = True
-   while ans:
-      print("\n\nWelcome to the eBay Scraper! This is a simple web scraper that collects data from eBay listings which I made for educational purposes")
-      print("""
-            1. Scrape eBay (New)
-            2. View already scraped data
-            """)
-      choice = input("Enter your choice (1 or 2): ").strip()
-      if choice == '1':
-         search = input("Enter the search term: ").strip()
-         pages = int(input("Enter the number of pages to scrape: ").strip())
-         print(f"Searching for: {search} on eBay")
-         print(f"Number of pages to scrape: {pages}")
-         df = scrape_ebay(search, pages)
-         print("Scraping completed.")
-         save_to_csv(df)
-
-         continue
-         
-      elif choice == '2':
-         try:
-            df = pd.read_csv("data/ebay_results.csv")
-            print("--------------------------------------------------")
-            print(df.head())
-         except FileNotFoundError:
-            print("No data found. Please scrape eBay first.")
-         continue
-      else:
-         print("Invalid choice. Ending the program.")
-         break
    
+   print("\nWelcome to the eBay Scraper! This is a simple web scraper that collects data from eBay listings which I made for educational purposes\n")
+   search = input("\nEnter the search term: ").strip()
+   pages = int(input("\nEnter the number of pages to scrape: ").strip())
+   print(f"\nSearching for: {search} on eBay")
+   print(f"\nNumber of pages to scrape: {pages}")
+   print("-----------------------------\n")
+   df = scrape_ebay(search, pages)
+   print("Scraping completed.")
+   save_to_csv(df)
 
-   
+   df = pd.read_csv("data/ebay_results.csv")
+          
+   print(df.head())
+   print(df.columns)
    
    
