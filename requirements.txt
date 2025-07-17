@@ -1,0 +1,5 @@
+## this project if for educational purposes only.
+
+requests
+beautifulsoup4
+pandas
