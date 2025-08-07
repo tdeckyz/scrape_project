@@ -16,7 +16,7 @@ A beginner-friendly Python script that scrapes product listings from eBay using 
 - BeautifulSoup
 - Pandas
 
-## sInstallation
+## Installation
 
 ```bash
 git clone https://github.com/tdeckyz/scrap_project.git
