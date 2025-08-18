@@ -15,6 +15,7 @@ A beginner-friendly Python script that scrapes product listings from eBay using 
 - Requests
 - BeautifulSoup
 - Pandas
+- Streamlit
 
 ## sInstallation
 

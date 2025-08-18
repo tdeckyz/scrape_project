@@ -3,9 +3,8 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import time
 import re
-import streamlit as st
-
-
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 def scrape_ebay(search_term, num_pages):
    results = []
@@ -109,30 +108,21 @@ def clean_data(df):
    }, inplace=True)
    return cleaned_df
 
+def visualize_data(df):
+   sns.histplot(df['Price'])
 
-st.title('eBay Scrapper')
-st.write("This is a simple eBay scraper that collects data from eBay listings for educational purposes.")
 
-search_term = st.text_input("Enter the search item: ")
-num_pages = st.number_input("Number of pages to scrape: ", min_value = 1, max_value = 20, value =1)
-
-if st.button("Scrape eBay"):
-   if not search_term:
-      st.warning("Please enter the search term.")
-   else:
-      with st.spinner("Scrapping eBay ..."):
-         df = scrape_ebay(search_term, num_pages)
-         cleaned_df = clean_data(df)
-
-      st.success(f"Scraping completed! Found {len(cleaned_df)} items.")
-      st.subheader("Data Table")
-      st.dataframe(cleaned_df)
-
-      st.subheader("Download CSV")
-      csv = cleaned_df.to_csv(index=False)
-      st.download_button(
-         label = "Download data as CSV",
-         data = csv, 
-         file_name = f"ebay_{search_term}.csv",
-         mime = 'text/csv'
-      ) 
+if __name__ == "__main__":
+   print("\nWelcome to the eBay Scraper! This is a simple web scraper that collects data from eBay listings which I made for educational purposes")
+   print("Great! Let's get started.\n")
+   search = input("Enter the search term: ").strip()
+   pages = int(input("Enter the number of pages to scrape: ").strip())
+   print(f"Searching for: {search} on eBay")
+   print(f"Number of pages to scrape: {pages}")
+   print("-----------------------------\n")
+   df = scrape_ebay(search, pages)
+   print("Scraping completed.")
+   print("\nCleaning the data...\n")
+   cleaned_df = clean_data(df)
+   save_to_csv(cleaned_df)
+   
