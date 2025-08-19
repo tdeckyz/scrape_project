@@ -4,8 +4,9 @@ import pandas as pd
 import time
 import re
 import streamlit as st
-
-
+import matplotlib.pyplot as plt
+import seaborn as sns
+from wordcloud import WordCloud
 
 def scrape_ebay(search_term, num_pages):
    results = []
@@ -110,12 +111,14 @@ def clean_data(df):
    return cleaned_df
 
 
-st.title('eBay Scrapper')
-st.write("This is a simple eBay scraper that collects data from eBay listings for educational purposes.")
+st.title('eBay Scraper And Analytics Dashboard')
+st.write("Collect, clean, visualize, and analyze eBay listing for educational insights.")
 
+#Inputs
 search_term = st.text_input("Enter the search item: ")
 num_pages = st.number_input("Number of pages to scrape: ", min_value = 1, max_value = 20, value =1)
 
+#Scraping
 if st.button("Scrape eBay"):
    if not search_term:
       st.warning("Please enter the search term.")
@@ -128,6 +131,81 @@ if st.button("Scrape eBay"):
       st.subheader("Data Table")
       st.dataframe(cleaned_df)
 
+      st.subheader("Visualizations")
+      st.subheader("Overall Insights: ")
+      st.markdown("These visualizations allow quick analysis of price trends, shipping patterns, regional differences, and product features, providing actionable insights for market analysis, pricing strategy, and product research.")
+
+      if not cleaned_df.empty:
+         #Price distribution
+         st.markdown("Price distribution")
+         fig, ax  = plt.subplots()
+         sns.histplot(cleaned_df['Price'], kde=True, ax=ax)
+         ax.set_xlabel("Price (USD)")
+         ax.set_ylabel("Count")
+         ax.set_title("Distribution of item prices")
+         st.pyplot(fig)
+         st.markdown("The histogram shows how item prices are spread. Most items are clustered in the lower price range, indicating a competitive" \
+         " market for affordable products. Outliers on the higher end suggest premium or rare items")
+
+         #Shipping cost distribution
+         st.markdown("Shipping cost distribution")
+         fig, ax = plt.subplots()
+         sns.histplot(cleaned_df["Shipping"].dropna(),bins=20, kde=False, ax=ax)
+         ax.set_xlabel("Shipping Cost (USD)")
+         ax.set_ylabel("Count")
+         ax.set_title("Distribution of shipping costs")
+         st.pyplot(fig)
+         st.markdown("Reveals that many items offer free shipping (0 USD), while some charge delivery fees. Highlights seller strategies and buyer preferences. " \
+         "Free shipping is common, but some sellers charge for delivery, indicating a mix of pricing strategies in the eBay marketplace.")
+
+         #Average price by location
+         avg_price_by_location = (
+            cleaned_df.dropna(subset=["Location","Price"])
+            .groupby("Location")["Price"].mean()
+            .sort_values(ascending= False)
+            .head(10)   #keeps the top 10 locations.
+            )
+         fig, ax = plt.subplots(figsize=(8, 5))
+         sns.barplot(x=avg_price_by_location.values, y=avg_price_by_location.index, ax=ax)
+         ax.set_xlabel("Average Price (USD)")
+         ax.set_ylabel("Location")
+         ax.set_title("Top 10 Locations by Average Price")
+         st.pyplot(fig)
+         st.markdown("This bar chart shows the top 10 locations with the highest average item prices. It highlights regional price variations, " \
+                     "indicating where buyers might find more expensive items.")
+
+         # --- Scatter Plot: Price vs Shipping ---
+         st.markdown("### Price vs Shipping Cost")
+         fig, ax = plt.subplots()
+         sns.scatterplot(data=cleaned_df.dropna(subset=["Price", "Shipping"]), x="Price", y="Shipping", ax=ax)
+         ax.set_xlabel("Price (USD)")
+         ax.set_ylabel("Shipping Cost (USD)")
+         ax.set_title("Price vs Shipping Cost")
+         st.pyplot(fig)
+         st.markdown("This scatter plot illustrates the relationship between item prices and shipping costs on eBay. It helps identify trends, " \
+         "such as whether higher-priced items tend to have higher shipping costs.")
+
+          # --- Boxplot of Prices ---
+         st.markdown("### Boxplot of Prices")
+         fig, ax = plt.subplots()
+         sns.boxplot(x=cleaned_df["Price"].dropna(), ax=ax)
+         ax.set_xlabel("Price (USD)")
+         ax.set_title("Boxplot of Item Prices")
+         st.pyplot(fig)
+         st.markdown("The boxplot provides a summary of item prices, showing the median, quartiles, and potential outliers. It helps identify " \
+                     "the overall price distribution and any extreme values that may warrant further investigation.")
+
+         # --- Wordcloud of Item Titles ---
+         st.markdown("### Wordcloud of Item Titles")
+         from wordcloud import WordCloud
+         titles_text = " ".join(cleaned_df["Title"].dropna())
+         wordcloud = WordCloud(width=800, height=400, background_color="white").generate(titles_text)
+         fig, ax = plt.subplots(figsize=(10,5))
+         ax.imshow(wordcloud, interpolation='bilinear')
+         ax.axis("off")
+         st.pyplot(fig)
+         st.markdown("The wordcloud visualizes the most common words in item titles, highlighting key trends and popular categories in the eBay marketplace.")
+
       st.subheader("Download CSV")
       csv = cleaned_df.to_csv(index=False)
       st.download_button(
@@ -135,4 +213,5 @@ if st.button("Scrape eBay"):
          data = csv, 
          file_name = f"ebay_{search_term}.csv",
          mime = 'text/csv'
-      ) 
+      )
+
