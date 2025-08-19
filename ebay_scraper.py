@@ -197,7 +197,6 @@ if st.button("Scrape eBay"):
 
          # --- Wordcloud of Item Titles ---
          st.markdown("### Wordcloud of Item Titles")
-         from wordcloud import WordCloud
          titles_text = " ".join(cleaned_df["Title"].dropna())
          wordcloud = WordCloud(width=800, height=400, background_color="white").generate(titles_text)
          fig, ax = plt.subplots(figsize=(10,5))
