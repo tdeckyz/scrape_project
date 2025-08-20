@@ -27,3 +27,8 @@ A beginner-friendly Python script that scrapes product listings from eBay using 
 ```bash
 git clone https://github.com/tdeckyz/scrap_project.git
 pip install -r requirements.txt
+
+## Run
+run streamlit run app.py
+
+## Demo
