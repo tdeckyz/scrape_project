@@ -1,5 +1,5 @@
 # eBay Web Scraper
-A Python script that scrapes product listings from eBay using a search keyword and stores the data in a CSV file and provides analytics with visualization. Please note that this is solely made for education purpose. 
+A Python script that scrapes product listings from eBay using a search keyword and stores the data in a SQLite database and provides analytics with visualization. Please note that this is solely made for education purpose. 
 
 ## Features
 
